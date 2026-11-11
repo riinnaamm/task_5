@@ -1,0 +1,4 @@
+chromadb
+flask
+$env:GOOGLE_API_KEY="Апі ключ"
+sentence-transformers

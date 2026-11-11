@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Лабораторна робота №5: RAG Система</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 900px;
+            margin: 30px auto;
+            padding: 0 20px;
+            color: #333;
+            line-height: 1.6;
+        }
+        h2 { color: #2c3e50; }
+        .search-box {
+            margin-bottom: 25px;
+            display: flex;
+            gap: 10px;
+        }
+        input[type="text"] {
+            flex: 1;
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover { background-color: #0056b3; }
+        .box {
+            border: 1px solid #ddd;
+            padding: 15px 20px;
+            margin-bottom: 20px;
+            border-radius: 6px;
+            background-color: #fff;
+        }
+        .box-retrieval { border-left: 5px solid #ffc107; background-color: #fffdf5; }
+        .box-rag { border-left: 5px solid #28a745; background-color: #f8fff9; }
+        .box-norag { border-left: 5px solid #17a2b8; background-color: #f4fbfd; }
+        .source-card {
+            background-color: #fff;
+            border: 1px solid #eee;
+            padding: 10px;
+            margin-top: 8px;
+            border-radius: 4px;
+            font-size: 0.95em;
+        }
+        .source-name {
+            font-weight: bold;
+            color: #555;
+        }
+    </style>
+</head>
+<body>
+
+    <h2>Система RAG (База знань: Python)</h2>
+    
+    <form method="POST" action="/" class="search-box">
+        <input type="text" name="query" placeholder="Введіть запитання (наприклад: Що таке lambda-функції?)" value="{{ query if query else '' }}" required>
+        <button type="submit">Шукати</button>
+    </form>
+
+    {% if query %}
+        <hr>
+        <h3>Результати для запиту: <i>"{{ query }}"</i></h3>
+
+        <div class="box box-retrieval">
+            <h4>1. Знайдені фрагменти у базі:</h4>
+            {% if retrieved_docs %}
+                {% for doc in retrieved_docs %}
+                    <div class="source-card">
+                        <span class="source-name">Джерело: {{ doc.metadata.source }}</span>
+                        <p style="margin: 5px 0 0 0;">{{ doc.page_content }}</p>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <p>Фрагментів не знайдено.</p>
+            {% endif %}
+        </div>
+
+        <div class="box box-rag">
+            <h4>2. Відповідь LLM З ВИКОРИСТАННЯМ RAG:</h4>
+            <p>{{ rag_response }}</p>
+        </div>
+
+        <div class="box box-norag">
+            <h4>3. Відповідь LLM БЕЗ RAG (Для порівняння):</h4>
+            <p>{{ no_rag_response }}</p>
+        </div>
+    {% endif %}
+
+</body>
+</html>
